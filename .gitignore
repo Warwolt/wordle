@@ -1,0 +1,11 @@
+*.class
+build/
+*.code-workspace
+
+.project
+.settings
+
+# https://github.com/github/gitignore/blob/master/Gradle.gitignore
+.gradle
+**/build/
+!src/**/build/

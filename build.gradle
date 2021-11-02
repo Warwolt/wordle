@@ -1,0 +1,34 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'jacoco'
+mainClassName = 'com.fizzbuzz.Main'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.javatuples:javatuples:1.1'
+	testImplementation(platform('org.junit:junit-bom:5.7.2'))
+	testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+test {
+	useJUnitPlatform()
+	testLogging {
+      events "passed", "skipped", "failed", "standardOut", "standardError"
+
+      showExceptions true
+      exceptionFormat "full"
+      showCauses true
+      showStackTraces true
+
+      showStandardStreams = true
+	}
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked'
+    options.deprecation = true
+}
