@@ -3,12 +3,17 @@ apply plugin: 'application'
 apply plugin: 'jacoco'
 mainClassName = 'com.fizzbuzz.Main'
 
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	implementation 'org.javatuples:javatuples:1.1'
 	testImplementation(platform('org.junit:junit-bom:5.7.2'))
 	testImplementation('org.junit.jupiter:junit-jupiter')
 }
