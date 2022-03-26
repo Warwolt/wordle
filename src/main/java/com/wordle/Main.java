@@ -1,18 +1,19 @@
-package com.fizzbuzz;
+package com.wordle;
 
-import static com.fizzbuzz.EscapeCode.Color;
+import static com.wordle.EscapeCode.Color;
 
 public class Main {
     public static void main(String[] args) {
         // create blank lines to enable vertical cursor navigation
-        final int numLines = 20;
+        final int numLines = 22;
         for (int i = 0; i < numLines; i++) {
             System.out.println();
         }
         System.out.print(EscapeCode.moveUp(numLines));
 
         System.out.println();
-        System.out.println("     WORDLE    ");
+        System.out.println("   W O R D L E    ");
+        System.out.println();
 
         printWord("chest", new Color[] {Color.GREEN, Color.WHITE, Color.YELLOW, Color.WHITE, Color.WHITE});
         printBlankRow();

@@ -1,4 +1,4 @@
-package com.fizzbuzz;
+package com.wordle;
 
 class EscapeCode {
     static final String RESET = "\033[0m";
