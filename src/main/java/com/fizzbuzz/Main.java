@@ -1,51 +1,64 @@
 package com.fizzbuzz;
 
-public class Main {
-    class EscapeCode {
-        static final String RESET = "\033[0m";
-        static final String COLOR_BLACK = "\033[0;30m";
-        static final String COLOR_RED = "\033[0;31m";
-        static final String COLOR_GREEN = "\033[0;32m";
-        static final String COLOR_YELLOW = "\033[0;33m";
-        static final String COLOR_BLUE = "\033[0;34m";
-        static final String COLOR_PURPLE = "\033[0;35m";
-        static final String COLOR_CYAN = "\033[0;36m";
-        static final String COLOR_WHITE = "\033[0;37m";
-    }
+import static com.fizzbuzz.EscapeCode.Color;
 
+public class Main {
     public static void main(String[] args) {
+        // create blank lines to enable vertical cursor navigation
+        final int numLines = 20;
+        for (int i = 0; i < numLines; i++) {
+            System.out.println();
+        }
+        System.out.print(EscapeCode.moveUp(numLines));
+
         System.out.println();
-        System.out.println("      WORDLE    ");
-        printRow("Flame");
-        printRow("Floor");
-        printRow("Sword");
-        printRow("Scope");
-        printRow("Beans");
+        System.out.println("     WORDLE    ");
+
+        printWord("chest", new Color[] {Color.GREEN, Color.WHITE, Color.YELLOW, Color.WHITE, Color.WHITE});
+        printBlankRow();
+        printBlankRow();
+        printBlankRow();
+        printBlankRow();
+        printBlankRow();
+
+        System.out.print(EscapeCode.RESET);
+
         System.out.println("Q W E R T Y U I O P");
         System.out.println(" A S D F G H J K L");
         System.out.println("  Z X C V B N M");
+
+        System.out.println();
     }
 
-    static void printRow(String word) {
-        char[] rowChars = new char[5];
+    static void printBlankRow() {
+        printWord("", null);
+    }
+
+    static void printWord(String word, Color[] colors) {
+        System.out.print(" ");
         int i = 0;
-
-        for (; i < word.length(); i++) {
-            rowChars[i] = word.charAt(i);
-        }
-
         for (; i < 5; i++) {
-            rowChars[i] = ' ';
+            char letter = i < word.length() ? Character.toUpperCase(word.charAt(i)) : ' ';
+            Color color = i < word.length() ? colors[i] : Color.WHITE;
+            printFramedLetter(letter, color);
+            if (i < 4) {
+                System.out.print(EscapeCode.moveForward(3) + EscapeCode.moveUp(3));
+            }
         }
+        System.out.println(EscapeCode.moveUp(1));
+    }
 
-        System.out.println(" ┌─┐┌─┐┌─┐┌─┐┌─┐");
-        System.out.println(String.format(
-                " │%c││%c││%c││%c││%c│",
-                rowChars[0],
-                rowChars[1],
-                rowChars[2],
-                rowChars[3],
-                rowChars[4]));
-        System.out.println(" └─┘└─┘└─┘└─┘└─┘");
+    static void printFramedLetter(char letter, Color color) {
+        System.out.print(color.code);
+        System.out.print(String.format("┌─┐"));
+        System.out.print(EscapeCode.moveBack(3) + EscapeCode.moveDown(1));
+        System.out.print(String.format("│%c│", letter));
+        System.out.print(EscapeCode.moveBack(3) + EscapeCode.moveDown(1));
+        System.out.print(String.format("└─┘"));
+        System.out.print(EscapeCode.moveBack(3) + EscapeCode.moveDown(1));
+    }
+
+    static void printRow() {
+
     }
 }
