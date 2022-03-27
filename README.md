@@ -8,5 +8,5 @@ gradle run
 On Windows (due to a bug in Gradle that garbles unicode characters):
 
 ```
-gradle assemble && java -Dfile.encoding=UTF8 -cp bin/main/ com.wordle.Main
+gradle jar && java -Dfile.encoding=utf-8 -jar build/libs/unit_testing_course.jar
 ```

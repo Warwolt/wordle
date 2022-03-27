@@ -7,9 +7,9 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 public class Main {
     public static void main(String[] args) {
-        // System.out.println( ansi().fg(RED).a("Hello").fg(GREEN).a(" World").reset() );
+        System.out.println(ansi().fg(RED).a("Hello").fg(GREEN).a(" World").reset());
         System.out.println("hej världen!");
-        System.out.println§(String.format("┌─┐"));
+        System.out.println(String.format("┌─┐"));
 
         // // create blank lines to enable vertical cursor navigation
         // final int numLines = 22;
