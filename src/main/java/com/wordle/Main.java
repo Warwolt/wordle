@@ -24,7 +24,10 @@ public class Main {
 
         System.out.print(EscapeCode.RESET);
 
-        System.out.println("Q W E R T Y U I O P");
+        System.out.print("\033[0;30;47m");
+        System.out.print("Q");
+        System.out.print(EscapeCode.RESET);
+        System.out.println(" W E R T Y U I O P");
         System.out.println(" A S D F G H J K L");
         System.out.println("  Z X C V B N M");
 

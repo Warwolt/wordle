@@ -20,6 +20,25 @@ class EscapeCode {
         }
     }
 
+    enum BackgroundColor {
+        BLACK("\033[40m"),
+        RED("\033[41m"),
+        GREEN("\033[42m"),
+        YELLOW("\033[43m"),
+        BLUE("\033[44m"),
+        MAGENTA("\033[45m"),
+        CYAN("\033[46m"),
+        WHITE("\033[47m");
+
+        final String code;
+
+        BackgroundColor(String code) {
+            this.code = code;
+        }
+
+    }
+
+
     static String moveUp(int n) {
         return String.format("\033[%dA", n);
     }
