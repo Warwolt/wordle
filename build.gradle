@@ -1,21 +1,21 @@
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'jacoco'
-mainClassName = 'com.fizzbuzz.Main'
+mainClassName = 'com.wordle.Main'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.javatuples:javatuples:1.1'
-	testImplementation(platform('org.junit:junit-bom:5.7.2'))
-	testImplementation('org.junit.jupiter:junit-jupiter')
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
+    testImplementation(platform('org.junit:junit-bom:5.7.2'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
 }
 
 test {
-	useJUnitPlatform()
-	testLogging {
+    useJUnitPlatform()
+    testLogging {
       events "passed", "skipped", "failed", "standardOut", "standardError"
 
       showExceptions true
@@ -24,11 +24,16 @@ test {
       showStackTraces true
 
       showStandardStreams = true
-	}
+    }
     finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs << '-Xlint:unchecked'
-    options.deprecation = true
+jar {
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    manifest {
+        attributes 'Main-Class': 'com.wordle.Main'
+    }
 }
