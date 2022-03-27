@@ -58,8 +58,4 @@ public class Main {
         System.out.print(String.format("└─┘"));
         System.out.print(EscapeCode.moveBack(3) + EscapeCode.moveDown(1));
     }
-
-    static void printRow() {
-
-    }
 }
