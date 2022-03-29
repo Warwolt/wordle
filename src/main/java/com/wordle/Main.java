@@ -43,9 +43,9 @@ public class Main {
     public static void drawWords(ColoredWord[] words) {
         for (int row = 0; row < 6; row++) {
             if (row < words.length) {
-                Draw.printWord(words[row].word, words[row].colors);
+                Draw.printFramedWord(words[row].word, words[row].colors);
             } else {
-                Draw.printWord("", null);
+                Draw.printFramedWord("", null);
             }
         }
     }
@@ -53,14 +53,14 @@ public class Main {
     static void drawKeyboard(Map<Character, ColorPair> colors) {
         char[] firstRow = {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'};
         System.out.print(" ");
-        Draw.printRow(firstRow, colors);
+        Draw.printColoredLetters(firstRow, colors);
 
         char[] secondRow = {'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'};
         System.out.print("  ");
-        Draw.printRow(secondRow, colors);
+        Draw.printColoredLetters(secondRow, colors);
 
         char[] thirdRow = {'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
         System.out.print("   ");
-        Draw.printRow(thirdRow, colors);
+        Draw.printColoredLetters(thirdRow, colors);
     }
 }
