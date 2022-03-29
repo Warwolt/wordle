@@ -26,7 +26,7 @@ public class Main {
         System.out.println();
     }
 
-    public static void drawBoard(
+    static void drawBoard(
         ColoredWord[] words,
         Map<Character, ColorPair> keyColors
     ) {
@@ -35,12 +35,12 @@ public class Main {
         drawKeyboard(keyColors);
     }
 
-    public static void drawTitle() {
+    static void drawTitle() {
         System.out.println();
         System.out.println("     W O R D L E    ");
     }
 
-    public static void drawWords(ColoredWord[] words) {
+    static void drawWords(ColoredWord[] words) {
         for (int row = 0; row < 6; row++) {
             if (row < words.length) {
                 Draw.printFramedWord(words[row].word, words[row].colors);
