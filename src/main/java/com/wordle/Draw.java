@@ -14,7 +14,6 @@ public class Draw {
     }
 
     static void printFramedWord(String word, Color[] colors) {
-        System.out.print("   ");
         for (int i = 0; i < 5; i++) {
             char letter = i < word.length() ? Character.toUpperCase(word.charAt(i)) : ' ';
             Color color = i < word.length() ? colors[i] : Color.WHITE;

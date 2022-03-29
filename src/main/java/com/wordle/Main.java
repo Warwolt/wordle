@@ -42,6 +42,7 @@ public class Main {
 
     static void drawWords(ColoredWord[] words) {
         for (int row = 0; row < 6; row++) {
+            System.out.print("   ");
             if (row < words.length) {
                 Draw.printFramedWord(words[row].word, words[row].colors);
             } else {
