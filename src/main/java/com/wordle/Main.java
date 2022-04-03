@@ -1,69 +1,77 @@
 package com.wordle;
 
+import static org.fusesource.jansi.Ansi.*;
 import static org.fusesource.jansi.Ansi.Color;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        ColoredWord words[] = {
-                new ColoredWord(
-                        "chest",
-                        new Color[] { Color.GREEN, Color.WHITE, Color.YELLOW, Color.WHITE, Color.WHITE })
-        };
+        final int MAX_GUESSES = 6;
+        final int NUM_DRAW_LINES = 25;
+        Draw.eraseLinesBelow(NUM_DRAW_LINES);
 
-        HashMap<Character, ColorPair> keyColors = new HashMap<>();
-        keyColors.put('C', new ColorPair(Color.BLACK, Color.GREEN));
-        keyColors.put('H', new ColorPair(Color.BLACK, Color.WHITE));
-        keyColors.put('E', new ColorPair(Color.BLACK, Color.YELLOW));
-        keyColors.put('S', new ColorPair(Color.BLACK, Color.WHITE));
-        keyColors.put('T', new ColorPair(Color.BLACK, Color.WHITE));
+        ColoredWord guesses[] = new ColoredWord[MAX_GUESSES];
+        Arrays.fill(guesses, blankLine(5));
+        HashMap<Character, ColorPair> keyboardColors = new HashMap<>();
 
-        Draw.clearLines(22);
-        drawBoard(words, keyColors);
-        System.out.println();
+        int numGuesses = 0;
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            drawBoard(guesses, keyboardColors);
+            System.out.println();
+
+            if (numGuesses == MAX_GUESSES) {
+                break;
+            }
+
+            System.out.print("Enter guess: ");
+            String input = scanner.next();
+
+            if (input.equals("quit")) {
+                break;
+            }
+
+            Color[] colors = new Color[input.length()];
+            Arrays.fill(colors, Color.WHITE);
+            guesses[numGuesses] = new ColoredWord(input, colors);
+            numGuesses += 1;
+
+            System.out.print(ansi().cursorUp(NUM_DRAW_LINES));
+            Draw.eraseLinesBelow(NUM_DRAW_LINES);
+        }
+
+        System.out.println("bye!");
+
+        scanner.close();
     }
 
-    static void drawBoard(
-            ColoredWord[] words,
-            Map<Character, ColorPair> keyColors) {
-        drawTitle();
-        drawWords(words);
-        drawKeyboard(keyColors);
+    static ColoredWord blankLine(int length) {
+        char[] spaces = new char[length];
+        Color[] colors = new Color[length];
+        Arrays.fill(colors, Color.WHITE);
+        Arrays.fill(spaces, ' ');
+        return new ColoredWord(new String(spaces), colors);
     }
 
-    static void drawTitle() {
+    static void drawBoard(ColoredWord[] words, Map<Character, ColorPair> keyboardColors) {
+        // draw title
         System.out.println();
         System.out.println("     W O R D L E    ");
-    }
 
-    static void drawWords(ColoredWord[] words) {
-        for (int row = 0; row < 6; row++) {
+        // draw words
+        for (ColoredWord word : words) {
             System.out.print("   ");
-            if (row < words.length) {
-                Draw.printFramedWord(words[row].word, words[row].colors);
-            } else {
-                Color[] colors = new Color[5];
-                Arrays.fill(colors, Color.WHITE);
-                Draw.printFramedWord("     ", colors);
-            }
+            Draw.printFramedWord(word.word, word.colors);
         }
-    }
 
-    static void drawKeyboard(Map<Character, ColorPair> colors) {
-        String firstRow = "Q W E R T Y U I O P";
-        String secondRow = "A S D F G H J K L";
-        String thirdRow = "Z X C V B N M";
-
-        System.out.print(" ");
-        Draw.printColoredString(firstRow, colors);
-
-        System.out.print("  ");
-        Draw.printColoredString(secondRow, colors);
-
-        System.out.print("   ");
-        Draw.printColoredString(thirdRow, colors);
+        // draw keyboard state
+        Draw.printColoredString(" Q W E R T Y U I O P", keyboardColors);
+        Draw.printColoredString("  A S D F G H J K L", keyboardColors);
+        Draw.printColoredString("   Z X C V B N M", keyboardColors);
     }
 }

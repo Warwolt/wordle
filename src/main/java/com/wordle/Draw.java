@@ -6,16 +6,9 @@ import static org.fusesource.jansi.Ansi.Color;
 import java.util.Map;
 
 public class Draw {
-    /**
-     * Creates space in the console for drawing to.
-     *
-     * This function must be called before any cursor movement can be
-     * guaranteed to work, since moving the cursor down when no line exists
-     * will instead do nothing.
-     */
-    static void clearLines(int numLines) {
+    static void eraseLinesBelow(int numLines) {
         for (int i = 0; i < numLines; i++) {
-            System.out.println();
+            System.out.println(ansi().eraseLine());
         }
         System.out.print(ansi().cursorUp(numLines));
     }
