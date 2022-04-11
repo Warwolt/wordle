@@ -6,12 +6,13 @@ import static org.fusesource.jansi.Ansi.Color;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         final int MAX_GUESSES = 6;
-        final int NUM_DRAW_LINES = 25;
+        final int NUM_DRAW_LINES = 26; // this must exactly match the number of lines printed
         Draw.eraseLinesBelow(NUM_DRAW_LINES);
 
         ColoredWord guesses[] = new ColoredWord[MAX_GUESSES];
@@ -20,15 +21,27 @@ public class Main {
 
         int numGuesses = 0;
         Scanner scanner = new Scanner(System.in);
+        Optional<String> errorMessage = Optional.empty();
 
         while (true) {
+            /* Draw current game state */
             drawBoard(guesses, keyboardColors);
             System.out.println();
 
+            /* Check if we should stop the game, or run another update */
             if (numGuesses == MAX_GUESSES) {
                 break;
             }
 
+            /* Print error message */
+            if (errorMessage.isPresent()) {
+                System.out.println(ansi().fg(Color.RED) + "error: " + ansi().reset() + errorMessage.get());
+                errorMessage = Optional.empty();
+            } else {
+                System.out.println();
+            }
+
+            /* Prompt user input */
             System.out.print("Enter guess: ");
             String input = scanner.next();
 
@@ -36,11 +49,16 @@ public class Main {
                 break;
             }
 
+            // test out error messages by just assigning it
+            errorMessage = Optional.of("this is an error message");
+
+            /* Update guesses */
             Color[] colors = new Color[input.length()];
             Arrays.fill(colors, Color.WHITE);
             guesses[numGuesses] = new ColoredWord(input, colors);
             numGuesses += 1;
 
+            /* Reset screen */
             System.out.print(ansi().cursorUp(NUM_DRAW_LINES));
             Draw.eraseLinesBelow(NUM_DRAW_LINES);
         }
