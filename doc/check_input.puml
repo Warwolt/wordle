@@ -1,0 +1,18 @@
+@startuml check_input
+
+start
+    if (input has length 5?) then (no)
+        :print: "incorrect length";
+        :input not ok;
+    (yes) elseif (input is a word?) then (no)
+        :print: "unrecognized word";
+        :input not ok;
+    (yes) elseif (input already guessed?) then
+        :print: "already guessed";
+        :input not ok;
+    else
+        :input is ok;
+    endif
+stop
+
+@enduml

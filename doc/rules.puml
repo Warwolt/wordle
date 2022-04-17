@@ -1,0 +1,21 @@
+@startuml rules
+
+start
+
+:secretly pick a word;
+
+repeat
+    :draw board;
+    :read input;
+    if (input ok?) then (no)
+        :print error;
+    else
+        :add guess to guesses;
+    endif
+repeat while (6 guesses or word guessed?) is (no) not (yes)
+
+:print game result;
+
+stop
+
+@enduml
