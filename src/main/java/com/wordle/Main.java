@@ -35,7 +35,7 @@ public class Main {
 
             /* Print error message */
             if (errorMessage.isPresent()) {
-                System.out.println(ansi().fg(Color.RED) + "error: " + ansi().reset() + errorMessage.get());
+                printErrorMsg(errorMessage.get());
                 errorMessage = Optional.empty();
             } else {
                 System.out.println();
@@ -91,5 +91,9 @@ public class Main {
         Draw.printColoredString(" Q W E R T Y U I O P", keyboardColors);
         Draw.printColoredString("  A S D F G H J K L", keyboardColors);
         Draw.printColoredString("   Z X C V B N M", keyboardColors);
+    }
+
+    static void printErrorMsg(String msg) {
+        System.out.println(ansi().fg(Color.RED) + "error: " + ansi().reset() + msg);
     }
 }
