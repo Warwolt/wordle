@@ -12,6 +12,13 @@ import java.util.Scanner;
 import com.wordle.InputChecker.InputError;
 
 public class Main {
+    enum GameState {
+        RUNNING,
+        WON,
+        LOST,
+        QUIT,
+    }
+
     public static void main(String[] args) {
         final int MAX_GUESSES = 6;
         final int WORD_LENGTH = 5;
@@ -28,16 +35,32 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Optional<String> errorMessage = Optional.empty();
 
-        final String[] dictionary = { "above", "below", "clear" };
+        final String[] dictionary = {
+            "above",
+            "below",
+            "clear",
+            "devil",
+            "ebola",
+            "fiend",
+            "guard"
+        };
         final InputChecker inputChecker = new InputChecker(dictionary);
+        final String wordToGuess = "clear";
 
-        while (true) {
+        GameState gameState = GameState.RUNNING;
+        while (gameState.equals(GameState.RUNNING)) {
             /* Draw current game state */
             drawBoard(guessWords, guessColors, keyboardColors);
             System.out.println();
 
             /* Check if we should stop the game, or run another update */
             if (numGuesses == MAX_GUESSES) {
+                gameState = GameState.LOST;
+                break;
+            }
+
+            if (numGuesses > 0 && guessWords[numGuesses - 1].equals(wordToGuess)) {
+                gameState = GameState.WON;
                 break;
             }
 
@@ -54,6 +77,7 @@ public class Main {
             String input = scanner.next();
 
             if (input.equals("quit")) {
+                gameState = GameState.QUIT;
                 break;
             }
 
@@ -72,7 +96,7 @@ public class Main {
             Draw.eraseLinesBelow(NUM_DRAW_LINES);
         }
 
-        System.out.println("bye!");
+        System.out.println(getGoodByeMsg(gameState));
 
         scanner.close();
     }
@@ -112,6 +136,19 @@ public class Main {
                 return "Unrecognized word \"" + input + "\"";
             case ALREADY_GUESSED:
                 return "You have already guessed \"" + input + "\"";
+            default:
+                throw new UnsupportedOperationException("Not implemented yet");
+        }
+    }
+
+    static String getGoodByeMsg(GameState state) {
+        switch (state) {
+            case WON:
+                return "You win!";
+            case LOST:
+                return "Better luck next time!";
+            case QUIT:
+                return "Bye!";
             default:
                 throw new UnsupportedOperationException("Not implemented yet");
         }
