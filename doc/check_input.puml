@@ -2,16 +2,13 @@
 
 start
     if (input has length 5?) then (no)
-        :print: "incorrect length";
-        :input not ok;
+        :error = "incorrect length";
     (yes) elseif (input is a word?) then (no)
-        :print: "unrecognized word";
-        :input not ok;
-    (yes) elseif (input already guessed?) then
-        :print: "already guessed";
-        :input not ok;
-    else
-        :input is ok;
+        :error = "unrecognized word";
+    (yes) elseif (input already guessed?) then (no)
+        :error = "already guessed";
+    else (yes)
+        ' :error = none;
     endif
 stop
 

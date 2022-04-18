@@ -9,23 +9,31 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.wordle.InputChecker.InputError;
+
 public class Main {
     public static void main(String[] args) {
         final int MAX_GUESSES = 6;
+        final int WORD_LENGTH = 5;
         final int NUM_DRAW_LINES = 26; // this must exactly match the number of lines printed
         Draw.eraseLinesBelow(NUM_DRAW_LINES);
 
-        ColoredWord guesses[] = new ColoredWord[MAX_GUESSES];
-        Arrays.fill(guesses, blankLine(5));
         HashMap<Character, ColorPair> keyboardColors = new HashMap<>();
+        String[] guessWords = new String[MAX_GUESSES];
+        Color[][] guessColors = new Color[MAX_GUESSES][WORD_LENGTH];
+        Arrays.fill(guessWords, "     ");
+        Arrays.fill(guessColors, whiteLine(WORD_LENGTH));
 
         int numGuesses = 0;
         Scanner scanner = new Scanner(System.in);
         Optional<String> errorMessage = Optional.empty();
 
+        final String[] dictionary = { "above", "below", "clear" };
+        final InputChecker inputChecker = new InputChecker(dictionary);
+
         while (true) {
             /* Draw current game state */
-            drawBoard(guesses, keyboardColors);
+            drawBoard(guessWords, guessColors, keyboardColors);
             System.out.println();
 
             /* Check if we should stop the game, or run another update */
@@ -49,14 +57,15 @@ public class Main {
                 break;
             }
 
-            // test out error messages by just assigning it
-            errorMessage = Optional.of("this is an error message");
-
-            /* Update guesses */
-            Color[] colors = new Color[input.length()];
-            Arrays.fill(colors, Color.WHITE);
-            guesses[numGuesses] = new ColoredWord(input, colors);
-            numGuesses += 1;
+            /* Check user input */
+            Optional<InputError> inputError = inputChecker.checkInput(input, guessWords);
+            if (inputError.isPresent()) {
+                errorMessage = Optional.of(getInputErrorMsg(inputError.get(), input));
+            } else {
+                /* Update guesses */
+                guessWords[numGuesses] = input;
+                numGuesses += 1;
+            }
 
             /* Reset screen */
             System.out.print(ansi().cursorUp(NUM_DRAW_LINES));
@@ -68,23 +77,21 @@ public class Main {
         scanner.close();
     }
 
-    static ColoredWord blankLine(int length) {
-        char[] spaces = new char[length];
+    static Color[] whiteLine(int length) {
         Color[] colors = new Color[length];
         Arrays.fill(colors, Color.WHITE);
-        Arrays.fill(spaces, ' ');
-        return new ColoredWord(new String(spaces), colors);
+        return colors;
     }
 
-    static void drawBoard(ColoredWord[] words, Map<Character, ColorPair> keyboardColors) {
+    static void drawBoard(String[] words, Color[][] colors, Map<Character, ColorPair> keyboardColors) {
         // draw title
         System.out.println();
         System.out.println("     W O R D L E    ");
 
         // draw words
-        for (ColoredWord word : words) {
+        for (int i = 0; i < words.length; i++) {
             System.out.print("   ");
-            Draw.printFramedWord(word.word, word.colors);
+            Draw.printFramedWord(words[i], colors[i]);
         }
 
         // draw keyboard state
@@ -95,5 +102,18 @@ public class Main {
 
     static void printErrorMsg(String msg) {
         System.out.println(ansi().fg(Color.RED) + "error: " + ansi().reset() + msg);
+    }
+
+    static String getInputErrorMsg(InputError error, String input) {
+        switch (error) {
+            case INCORRECT_LENGTH:
+                return "Input must be exactly 5 letters";
+            case UNRECOGNIZED_WORD:
+                return "Unrecognized word \"" + input + "\"";
+            case ALREADY_GUESSED:
+                return "You have already guessed \"" + input + "\"";
+            default:
+                throw new UnsupportedOperationException("Not implemented yet");
+        }
     }
 }

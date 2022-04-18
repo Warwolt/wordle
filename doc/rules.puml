@@ -1,5 +1,7 @@
 @startuml rules
 
+title Word Game Rules
+
 start
 
 :secretly pick a word;
@@ -7,12 +9,13 @@ start
 repeat
     :draw board;
     :read input;
+    :check input;
     if (input ok?) then (no)
         :print error;
     else
         :add guess to guesses;
     endif
-repeat while (6 guesses or word guessed?) is (no) not (yes)
+repeat while (6 wrong guesses or 1 correct guess?) is (no) not (yes)
 
 :print game result;
 
