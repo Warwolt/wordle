@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.wordle.GuessChecker.LetterStatus;
 import com.wordle.InputChecker.InputError;
 
 public class Main {
@@ -27,9 +28,11 @@ public class Main {
 
         HashMap<Character, ColorPair> keyboardColors = new HashMap<>();
         String[] guessWords = new String[MAX_GUESSES];
-        Color[][] guessColors = new Color[MAX_GUESSES][WORD_LENGTH];
         Arrays.fill(guessWords, "     ");
-        Arrays.fill(guessColors, whiteLine(WORD_LENGTH));
+        Color[][] guessColors = new Color[MAX_GUESSES][];
+        for (int i = 0; i < MAX_GUESSES; i++) {
+            guessColors[i] = whiteLine(WORD_LENGTH);
+        }
 
         int numGuesses = 0;
         Scanner scanner = new Scanner(System.in);
@@ -37,6 +40,7 @@ public class Main {
 
         final String[] dictionary = {
             "above",
+            "aboil",
             "below",
             "clear",
             "devil",
@@ -45,7 +49,8 @@ public class Main {
             "guard"
         };
         final InputChecker inputChecker = new InputChecker(dictionary);
-        final String secretWord = "clear";
+        final String secretWord = "aboil";
+        final GuessChecker guessChecker = new GuessChecker(secretWord);
 
         GameState gameState = GameState.RUNNING;
         while (gameState.equals(GameState.RUNNING)) {
@@ -87,6 +92,10 @@ public class Main {
                 errorMessage = Optional.of(getInputErrorMsg(inputError.get(), input));
             } else {
                 /* Update guesses */
+                LetterStatus[] statuses = guessChecker.checkGuess(input);
+                for (int i = 0; i < statuses.length; i++) {
+                    guessColors[numGuesses][i] = letterStatusToColor(statuses[i]);
+                }
                 guessWords[numGuesses] = input;
                 numGuesses += 1;
             }
@@ -149,6 +158,19 @@ public class Main {
                 return "Better luck next time!";
             case QUIT:
                 return "Bye!";
+            default:
+                throw new UnsupportedOperationException("Not implemented yet");
+        }
+    }
+
+    static Color letterStatusToColor(LetterStatus status) {
+        switch (status) {
+            case CORRECT_SPOT:
+                return Color.GREEN;
+            case WRONG_SPOT:
+                return Color.YELLOW;
+            case NO_SPOT:
+                return Color.WHITE;
             default:
                 throw new UnsupportedOperationException("Not implemented yet");
         }
