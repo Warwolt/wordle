@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.wordle.GuessChecker.LetterStatus;
 import com.wordle.InputChecker.InputError;
 
 public class Main {
@@ -27,9 +28,11 @@ public class Main {
 
         HashMap<Character, ColorPair> keyboardColors = new HashMap<>();
         String[] guessWords = new String[MAX_GUESSES];
-        Color[][] guessColors = new Color[MAX_GUESSES][WORD_LENGTH];
         Arrays.fill(guessWords, "     ");
-        Arrays.fill(guessColors, whiteLine(WORD_LENGTH));
+        Color[][] guessColors = new Color[MAX_GUESSES][];
+        for (int i = 0; i < MAX_GUESSES; i++) {
+            guessColors[i] = whiteLine(WORD_LENGTH);
+        }
 
         int numGuesses = 0;
         Scanner scanner = new Scanner(System.in);
@@ -37,15 +40,18 @@ public class Main {
 
         final String[] dictionary = {
             "above",
+            "aboil",
             "below",
             "clear",
             "devil",
             "ebola",
             "fiend",
-            "guard"
+            "guard",
+            "robot"
         };
         final InputChecker inputChecker = new InputChecker(dictionary);
-        final String wordToGuess = "clear";
+        final String secretWord = "aboil";
+        final GuessChecker guessChecker = new GuessChecker(secretWord);
 
         GameState gameState = GameState.RUNNING;
         while (gameState.equals(GameState.RUNNING)) {
@@ -59,7 +65,7 @@ public class Main {
                 break;
             }
 
-            if (numGuesses > 0 && guessWords[numGuesses - 1].equals(wordToGuess)) {
+            if (numGuesses > 0 && guessWords[numGuesses - 1].equals(secretWord)) {
                 gameState = GameState.WON;
                 break;
             }
@@ -87,7 +93,17 @@ public class Main {
                 errorMessage = Optional.of(getInputErrorMsg(inputError.get(), input));
             } else {
                 /* Update guesses */
-                guessWords[numGuesses] = input;
+                String guess = input;
+                LetterStatus[] statuses = guessChecker.checkGuess(guess);
+                for (int i = 0; i < statuses.length; i++) {
+                    Color color = letterStatusToColor(statuses[i]);
+                    guessColors[numGuesses][i] = color;
+
+                    char key = Character.toUpperCase(guess.charAt(i));
+                    ColorPair colorPair = new ColorPair(Color.BLACK, color);
+                    keyboardColors.put(key, colorPair);
+                }
+                guessWords[numGuesses] = guess;
                 numGuesses += 1;
             }
 
@@ -149,6 +165,19 @@ public class Main {
                 return "Better luck next time!";
             case QUIT:
                 return "Bye!";
+            default:
+                throw new UnsupportedOperationException("Not implemented yet");
+        }
+    }
+
+    static Color letterStatusToColor(LetterStatus status) {
+        switch (status) {
+            case CORRECT_SPOT:
+                return Color.GREEN;
+            case WRONG_SPOT:
+                return Color.YELLOW;
+            case NO_SPOT:
+                return Color.WHITE;
             default:
                 throw new UnsupportedOperationException("Not implemented yet");
         }
