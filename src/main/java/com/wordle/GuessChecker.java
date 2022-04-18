@@ -19,17 +19,22 @@ public class GuessChecker {
         }
 
         LetterStatus[] statuses = new LetterStatus[guess.length()];
-        char[] guessLetters = guess.toCharArray();
-        char[] secretLetters = secretWord.toCharArray();
-
+        // 1. check for exact matches
+        // 2. check letters in wrong spots
+        // 3. mark remaining letters as incorrect
         for (int i = 0; i < guess.length(); i++) {
-            // check if guess letter matches secret letter
-            if (guessLetters[i] == secretLetters[i]) {
+            char currentChar = guess.charAt(i);
+            if (currentChar == secretWord.charAt(i)) {
                 statuses[i] = LetterStatus.CORRECT_SPOT;
-            // else check if guess letter matches any secret letter
-            } else if (secretWord.indexOf(guessLetters[i]) != -1) {
-                statuses[i] = LetterStatus.WRONG_SPOT;
-            // else, no corresponding letter found
+            } else if (secretWord.indexOf(currentChar) != -1) {
+                long guessCount = guess.chars().filter(ch -> ch == currentChar).count();
+                long secretCount = secretWord.chars().filter(ch -> ch == currentChar).count();
+
+                if (guessCount <= secretCount) {
+                    statuses[i] = LetterStatus.WRONG_SPOT;
+                } else {
+                    statuses[i] = LetterStatus.NO_SPOT;
+                }
             } else {
                 statuses[i] = LetterStatus.NO_SPOT;
             }

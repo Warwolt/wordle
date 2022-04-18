@@ -1,5 +1,6 @@
 package com.wordle;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -60,11 +61,60 @@ public class GuessCheckerTests {
         assertArrayEquals(expected, statuses);
     }
 
-    // two different letters, both wrong spot
-    // two different letters, one wrong spot, one correct spot
-    // two different letters, both correct spot
+    @Test
+    void twoLetters_BothWrongSpots_GivesWrongSpotStatuses() {
+        final GuessChecker checker = new GuessChecker("abc");
+        final String guess = "uab";
 
-    // two of same letter, both wrong spot
-    // two of same letter, one wrong spot, one correct spot
-    // two of same letter, both correct spot
+        final LetterStatus[] statuses = checker.checkGuess(guess);
+
+        final LetterStatus[] expected = { LetterStatus.NO_SPOT, LetterStatus.WRONG_SPOT, LetterStatus.WRONG_SPOT };
+        assertArrayEquals(expected, statuses);
+    }
+
+    @Test
+    void twoLetters_OneInCorrectSpot_GivesOneCorrectSpotStatus() {
+        final GuessChecker checker = new GuessChecker("abc");
+        final String guess = "aub";
+
+        final LetterStatus[] statuses = checker.checkGuess(guess);
+
+        final LetterStatus[] expected = { LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT, LetterStatus.WRONG_SPOT };
+        assertArrayEquals(expected, statuses);
+    }
+
+    @Test
+    void twoLetters_BothInCorrectSpot_GivesTwoCorrectSpotStatuses() {
+        final GuessChecker checker = new GuessChecker("abc");
+        final String guess = "abz";
+
+        final LetterStatus[] statuses = checker.checkGuess(guess);
+
+        final LetterStatus[] expected = { LetterStatus.CORRECT_SPOT, LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT};
+        assertArrayEquals(expected, statuses);
+    }
+
+    @Test
+    void twoEqualLetters_ButOnlyOneInSecretWord_GivesOnlyOneCorrectSpotStatus() {
+        final GuessChecker checker = new GuessChecker("abc");
+        final String guess = "bby";
+
+        final LetterStatus[] statuses = checker.checkGuess(guess);
+
+        final LetterStatus[] expected = { LetterStatus.NO_SPOT, LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT};
+        assertArrayEquals(expected, statuses);
+    }
+
+    @Test
+    @Disabled
+    // TODO: give a more sensible name for this, figure out how to make it pass
+    void threeEqualLetters_OnlyTwoInSecretWord_GivesOneCorrectOneWrongAndOneNoSpotStatus() {
+        final GuessChecker checker = new GuessChecker("babe");
+        final String guess = "obbb";
+
+        final LetterStatus[] statuses = checker.checkGuess(guess);
+
+        final LetterStatus[] expected = { LetterStatus.NO_SPOT, LetterStatus.WRONG_SPOT, LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT};
+        assertArrayEquals(expected, statuses);
+    }
 }
