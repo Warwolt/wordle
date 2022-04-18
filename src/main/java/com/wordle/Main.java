@@ -45,7 +45,7 @@ public class Main {
             "guard"
         };
         final InputChecker inputChecker = new InputChecker(dictionary);
-        final String wordToGuess = "clear";
+        final String secretWord = "clear";
 
         GameState gameState = GameState.RUNNING;
         while (gameState.equals(GameState.RUNNING)) {
@@ -59,7 +59,7 @@ public class Main {
                 break;
             }
 
-            if (numGuesses > 0 && guessWords[numGuesses - 1].equals(wordToGuess)) {
+            if (numGuesses > 0 && guessWords[numGuesses - 1].equals(secretWord)) {
                 gameState = GameState.WON;
                 break;
             }
