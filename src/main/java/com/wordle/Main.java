@@ -3,6 +3,11 @@ package com.wordle;
 import static org.fusesource.jansi.Ansi.*;
 import static org.fusesource.jansi.Ansi.Color;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +25,7 @@ public class Main {
         QUIT,
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
         final int MAX_GUESSES = 6;
         final int WORD_LENGTH = 5;
         final int NUM_INITIAL_LINES = 26; // needed to be able to move cursor down
@@ -38,19 +43,9 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Optional<String> errorMessage = Optional.empty();
 
-        final String[] dictionary = {
-            "above",
-            "aboil",
-            "below",
-            "clear",
-            "devil",
-            "ebola",
-            "fiend",
-            "guard",
-            "robot"
-        };
+        final String[] dictionary = readDictionary("dictionary.txt");
         final InputChecker inputChecker = new InputChecker(dictionary);
-        final String secretWord = "aboil";
+        final String secretWord = "spike";
         final GuessChecker guessChecker = new GuessChecker(secretWord);
 
         GameState gameState = GameState.RUNNING;
@@ -58,22 +53,18 @@ public class Main {
             /* Draw current game state */
             drawBoard(guessWords, guessColors, keyboardColors);
             Draw.println();
-
-            /* Check if we should stop the game, or run another update */
-            if (numGuesses == MAX_GUESSES) {
-                gameState = GameState.LOST;
-                break;
-            }
-
-            if (numGuesses > 0 && guessWords[numGuesses - 1].equals(secretWord)) {
-                gameState = GameState.WON;
-                break;
-            }
-
-            /* Print error message */
             if (errorMessage.isPresent()) {
                 printErrorMsg(errorMessage.get());
                 errorMessage = Optional.empty();
+            }
+
+            /* Check if we should stop the game, or run another update */
+            if (numGuesses > 0 && guessWords[numGuesses - 1].equals(secretWord)) {
+                gameState = GameState.WON;
+                break;
+            } else if (numGuesses == MAX_GUESSES) {
+                gameState = GameState.LOST;
+                break;
             }
 
             /* Prompt user input */
@@ -94,14 +85,15 @@ public class Main {
                 /* Update guesses */
                 String guess = input;
                 LetterStatus[] statuses = guessChecker.checkGuess(guess);
+
                 for (int i = 0; i < statuses.length; i++) {
                     Color color = letterStatusToColor(statuses[i]);
-                    guessColors[numGuesses][i] = color;
-
                     char key = Character.toUpperCase(guess.charAt(i));
                     ColorPair colorPair = new ColorPair(Color.BLACK, color);
+                    guessColors[numGuesses][i] = color;
                     keyboardColors.put(key, colorPair);
                 }
+
                 guessWords[numGuesses] = guess;
                 numGuesses += 1;
             }
@@ -113,6 +105,17 @@ public class Main {
         Draw.println(getGoodByeMsg(gameState));
 
         scanner.close();
+    }
+
+    static String[] readDictionary(String path) throws FileNotFoundException, IOException {
+        ArrayList<String> dictionary = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                dictionary.add(line.toLowerCase());
+            }
+        }
+        return dictionary.toArray(new String[dictionary.size()]);
     }
 
     static Color[] whiteLine(int length) {
