@@ -1,6 +1,5 @@
 package com.wordle;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -46,7 +45,11 @@ public class GuessCheckerTests {
 
         final LetterStatus[] statuses = checker.checkGuess(guess);
 
-        final LetterStatus[] expected = { LetterStatus.NO_SPOT, LetterStatus.WRONG_SPOT, LetterStatus.NO_SPOT };
+        final LetterStatus[] expected = {
+            LetterStatus.NO_SPOT,
+            LetterStatus.WRONG_SPOT,
+            LetterStatus.NO_SPOT
+        };
         assertArrayEquals(expected, statuses);
     }
 
@@ -57,7 +60,11 @@ public class GuessCheckerTests {
 
         final LetterStatus[] statuses = checker.checkGuess(guess);
 
-        final LetterStatus[] expected = { LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT, LetterStatus.NO_SPOT };
+        final LetterStatus[] expected = {
+            LetterStatus.CORRECT_SPOT,
+            LetterStatus.NO_SPOT,
+            LetterStatus.NO_SPOT
+        };
         assertArrayEquals(expected, statuses);
     }
 
@@ -68,7 +75,11 @@ public class GuessCheckerTests {
 
         final LetterStatus[] statuses = checker.checkGuess(guess);
 
-        final LetterStatus[] expected = { LetterStatus.NO_SPOT, LetterStatus.WRONG_SPOT, LetterStatus.WRONG_SPOT };
+        final LetterStatus[] expected = {
+            LetterStatus.NO_SPOT,
+            LetterStatus.WRONG_SPOT,
+            LetterStatus.WRONG_SPOT
+        };
         assertArrayEquals(expected, statuses);
     }
 
@@ -79,7 +90,11 @@ public class GuessCheckerTests {
 
         final LetterStatus[] statuses = checker.checkGuess(guess);
 
-        final LetterStatus[] expected = { LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT, LetterStatus.WRONG_SPOT };
+        final LetterStatus[] expected = {
+            LetterStatus.CORRECT_SPOT,
+            LetterStatus.NO_SPOT,
+            LetterStatus.WRONG_SPOT
+        };
         assertArrayEquals(expected, statuses);
     }
 
@@ -90,7 +105,11 @@ public class GuessCheckerTests {
 
         final LetterStatus[] statuses = checker.checkGuess(guess);
 
-        final LetterStatus[] expected = { LetterStatus.CORRECT_SPOT, LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT};
+        final LetterStatus[] expected = {
+            LetterStatus.CORRECT_SPOT,
+            LetterStatus.CORRECT_SPOT,
+            LetterStatus.NO_SPOT
+        };
         assertArrayEquals(expected, statuses);
     }
 
@@ -101,20 +120,27 @@ public class GuessCheckerTests {
 
         final LetterStatus[] statuses = checker.checkGuess(guess);
 
-        final LetterStatus[] expected = { LetterStatus.NO_SPOT, LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT};
+        final LetterStatus[] expected = {
+            LetterStatus.NO_SPOT,
+            LetterStatus.CORRECT_SPOT,
+            LetterStatus.NO_SPOT
+        };
         assertArrayEquals(expected, statuses);
     }
 
     @Test
-    @Disabled
-    // TODO: give a more sensible name for this, figure out how to make it pass
     void threeEqualLetters_OnlyTwoInSecretWord_GivesOneCorrectOneWrongAndOneNoSpotStatus() {
-        final GuessChecker checker = new GuessChecker("babe");
-        final String guess = "obbb";
+        final GuessChecker checker = new GuessChecker("abba");
+        final String guess = "yaaa";
 
         final LetterStatus[] statuses = checker.checkGuess(guess);
 
-        final LetterStatus[] expected = { LetterStatus.NO_SPOT, LetterStatus.WRONG_SPOT, LetterStatus.CORRECT_SPOT, LetterStatus.NO_SPOT};
+        final LetterStatus[] expected = {
+            LetterStatus.NO_SPOT,
+            LetterStatus.WRONG_SPOT,
+            LetterStatus.NO_SPOT,
+            LetterStatus.CORRECT_SPOT
+        };
         assertArrayEquals(expected, statuses);
     }
 }
