@@ -23,8 +23,8 @@ public class Main {
     public static void main(String[] args) {
         final int MAX_GUESSES = 6;
         final int WORD_LENGTH = 5;
-        final int NUM_DRAW_LINES = 26; // this must exactly match the number of lines printed
-        Draw.eraseLinesBelow(NUM_DRAW_LINES);
+        final int NUM_INITIAL_LINES = 26; // needed to be able to move cursor down
+        Draw.eraseLinesBelow(NUM_INITIAL_LINES);
 
         HashMap<Character, ColorPair> keyboardColors = new HashMap<>();
         String[] guessWords = new String[MAX_GUESSES];
@@ -57,7 +57,7 @@ public class Main {
         while (gameState.equals(GameState.RUNNING)) {
             /* Draw current game state */
             drawBoard(guessWords, guessColors, keyboardColors);
-            System.out.println();
+            Draw.println();
 
             /* Check if we should stop the game, or run another update */
             if (numGuesses == MAX_GUESSES) {
@@ -74,13 +74,12 @@ public class Main {
             if (errorMessage.isPresent()) {
                 printErrorMsg(errorMessage.get());
                 errorMessage = Optional.empty();
-            } else {
-                System.out.println();
             }
 
             /* Prompt user input */
-            System.out.print("Enter guess: ");
+            Draw.print("Enter guess: ");
             String input = scanner.next();
+            Draw.countLine(); // count scanner newline
 
             if (input.equals("quit")) {
                 gameState = GameState.QUIT;
@@ -108,11 +107,10 @@ public class Main {
             }
 
             /* Reset screen */
-            System.out.print(ansi().cursorUp(NUM_DRAW_LINES));
-            Draw.eraseLinesBelow(NUM_DRAW_LINES);
+            Draw.erase();
         }
 
-        System.out.println(getGoodByeMsg(gameState));
+        Draw.println(getGoodByeMsg(gameState));
 
         scanner.close();
     }
@@ -125,12 +123,12 @@ public class Main {
 
     static void drawBoard(String[] words, Color[][] colors, Map<Character, ColorPair> keyboardColors) {
         // draw title
-        System.out.println();
-        System.out.println("     W O R D L E    ");
+        Draw.println();
+        Draw.println("     W O R D L E    ");
 
         // draw words
         for (int i = 0; i < words.length; i++) {
-            System.out.print("   ");
+            Draw.print("   ");
             Draw.printFramedWord(words[i], colors[i]);
         }
 
@@ -141,7 +139,7 @@ public class Main {
     }
 
     static void printErrorMsg(String msg) {
-        System.out.println(ansi().fg(Color.RED) + "error: " + ansi().reset() + msg);
+        Draw.println(ansi().fg(Color.RED) + "error: " + ansi().reset() + msg);
     }
 
     static String getInputErrorMsg(InputError error, String input) {

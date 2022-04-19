@@ -6,6 +6,106 @@ import static org.fusesource.jansi.Ansi.Color;
 import java.util.Map;
 
 public class Draw {
+    static int numPrintedLines = 0;
+
+    /* print wrappers */
+    public static void print(boolean b) {
+        System.out.print(b);
+    }
+
+    public static void print(char c) {
+        System.out.print(c);
+    }
+
+    public static void print(int i) {
+        System.out.print(i);
+    }
+
+    public static void print(long l) {
+        System.out.print(l);
+    }
+
+    public static void print(float f) {
+        System.out.print(f);
+    }
+
+    public static void print(double d) {
+        System.out.print(d);
+    }
+
+    public static void print(char s[]) {
+        System.out.print(s);
+    }
+
+    public static void print(String s) {
+        System.out.print(s);
+    }
+
+    public static void print(Object obj) {
+        System.out.print(obj);
+    }
+
+    /* println wrappers */
+    static public void println() {
+        numPrintedLines += 1;
+        System.out.println();
+    }
+
+    static public void println(boolean x) {
+        numPrintedLines += 1;
+        System.out.println(x);
+    }
+
+    static public void println(char x) {
+        numPrintedLines += 1;
+        System.out.println(x);
+    }
+
+    static public void println(int x) {
+        numPrintedLines += 1;
+        System.out.println(x);
+    }
+
+    static public void println(long x) {
+        numPrintedLines += 1;
+        System.out.println(x);
+    }
+
+    static public void println(float x) {
+        numPrintedLines += 1;
+        System.out.println(x);
+    }
+
+    static public void println(double x) {
+        numPrintedLines += 1;
+        System.out.println(x);
+    }
+
+    static public void println(char x[]) {
+        numPrintedLines += 1;
+        System.out.println(x);
+    }
+
+    static public void println(String x) {
+        numPrintedLines += 1;
+        System.out.println(x);
+    }
+
+    static public void println(Object x) {
+        numPrintedLines += 1;
+        System.out.println();
+    }
+
+    static void countLine() {
+        numPrintedLines += 1;
+    }
+
+    static void erase() {
+        System.out.print(ansi().cursorUp(numPrintedLines));
+        eraseLinesBelow(numPrintedLines);
+        numPrintedLines = 0;
+    }
+
     static void eraseLinesBelow(int numLines) {
         for (int i = 0; i < numLines; i++) {
             System.out.println(ansi().eraseLine());
@@ -22,11 +122,12 @@ public class Draw {
             Color color = colors[i];
             printFramedLetter(letter, color);
             if (i < word.length() - 1) {
-                System.out.print(ansi().cursorMove(3, -3));
+                Draw.print(ansi().cursorMove(3, -3));
+                numPrintedLines -= 3;
             }
         }
-        System.out.print(ansi().reset());
-        System.out.println(ansi().cursorUp(1));
+        Draw.print(ansi().reset());
+        Draw.print(ansi().cursorLeft(100));
     }
 
     /**
@@ -38,25 +139,26 @@ public class Draw {
             if (colorPair != null) {
                 printColoredLetter(letter, colorPair);
             } else {
-                System.out.print(letter);
+                Draw.print(letter);
             }
         }
-        System.out.println();
+        Draw.println();
     }
 
     static private void printFramedLetter(char letter, Color color) {
-        System.out.print(ansi().fg(color.value()));
-        System.out.print(String.format("┌─┐"));
-        System.out.print(ansi().cursorMove(-3, 1));
-        System.out.print(String.format("│%c│", letter));
-        System.out.print(ansi().cursorMove(-3, 1));
-        System.out.print(String.format("└─┘"));
-        System.out.print(ansi().cursorMove(-3, 1));
+        Draw.print(ansi().fg(color.value()));
+        Draw.print(String.format("┌─┐"));
+        Draw.print(ansi().cursorMove(-3, 1));
+        Draw.print(String.format("│%c│", letter));
+        Draw.print(ansi().cursorMove(-3, 1));
+        Draw.print(String.format("└─┘"));
+        Draw.print(ansi().cursorMove(-3, 1));
+        numPrintedLines += 3;
     }
 
     static private void printColoredLetter(char letter, ColorPair colorPair) {
-        System.out.print(ansi().fg(colorPair.fg).bg(colorPair.bg));
-        System.out.print(letter);
-        System.out.print(ansi().reset());
+        Draw.print(ansi().fg(colorPair.fg).bg(colorPair.bg));
+        Draw.print(letter);
+        Draw.print(ansi().reset());
     }
 }
