@@ -24,20 +24,8 @@ public class InputChecker {
      * @return InputError if any error found, else Optional.empty()
      */
     public Optional<InputError> checkInput(String input, final String[] guesses) {
-        /* Check length */
-        if (input.length() != 5) {
-            return Optional.of(InputError.INCORRECT_LENGTH);
-        }
 
-        /* Check is in dictionary */
-        if (!Arrays.stream(dictionary).anyMatch(input::equals)) {
-            return Optional.of(InputError.UNRECOGNIZED_WORD);
-        }
-
-        /* Check if already guessed */
-        if (Arrays.stream(guesses).anyMatch(input::equals)) {
-            return Optional.of(InputError.ALREADY_GUESSED);
-        }
+        // implement check input here
 
         return Optional.empty();
     }
