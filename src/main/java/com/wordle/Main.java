@@ -69,7 +69,7 @@ public class Main {
 
             /* Prompt user input */
             Draw.print("Enter guess: ");
-            String input = scanner.next();
+            String input = scanner.next().toLowerCase();
             Draw.countLine(); // count scanner newline
 
             if (input.equals("quit")) {
